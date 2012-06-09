@@ -495,7 +495,7 @@
 }
 
 #fluxindex #brdmain .blocktable h2, #fluxsearch #vf h2 {
-	font: 1em/1.462em "proxima-nova", sans-serif;
+	font: 1.333em "proxima-nova", sans-serif;
 	font-weight: bold;
 	margin: 1px 1px 0 1px;
 	padding: 7px 8px;
@@ -544,7 +544,7 @@
 }
 
 .flux .blocktable h3 {
-	font-size: 1.25em;
+	font-size: 1.1em;
 	line-height: 15px;
 	font-weight: bold;
 	padding: 0 0 3px;
