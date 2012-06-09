@@ -167,6 +167,11 @@ $tpl_main = str_replace('<pun_title>', '<h1><a href="index.php">'.pun_htmlspecia
 // END SUBST - <pun_title>
 
 
+// START SUBST - <pun_title_text>
+$tpl_main = str_replace('<pun_title_text>', pun_htmlspecialchars($pun_config['o_board_title']), $tpl_main);
+// END SUBST - <pun_title_text>
+
+
 // START SUBST - <pun_desc>
 $tpl_main = str_replace('<pun_desc>', '<div id="brddesc">'.$pun_config['o_board_desc'].'</div>', $tpl_main);
 // END SUBST - <pun_desc>
