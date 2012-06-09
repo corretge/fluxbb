@@ -180,7 +180,7 @@
 }
 
 #fluxindex #brdmain {
-	padding-top: 24px;
+	padding-top: 0.5em;
 }
 
 #fluxredirect #brdmain, #fluxmaint #brdmain {
@@ -233,13 +233,14 @@
 	display: block;
 	font-family: "proxima-nova", sans-serif;
 	font-weight: 700;
-	font-size: 1.25m;
+	font-size: 1.16em;
 	float: none;
 	padding: 7px 11px 11px;
 	line-height: 24px;
 	color: black;
 	text-decoration: none;
 	white-space: nowrap;
+	border-right: 1px dotted #cacaca;
 }
 
 #brdmenu a:hover, #brdmenu a:active, #brdmenu a:focus {
@@ -247,11 +248,16 @@
 	text-decoration: none;
 }
 
+#brdmenu a:hover {
+	background-color: #EBEBEB;
+}
+
 /* Welcome Box
 ----------------------------------------------------------------*/
 
 #brdwelcome {
 	padding: 0 0 10px 0;
+	font-size: 0.9em;
 }
 
 #brdwelcome .conl, #brdwelcome .conr, #brdwelcome p, #brdwelcome li {
@@ -1722,7 +1728,7 @@ textarea {
 body {
   margin: 0;
   font-family: sans-serif;
-  font-size: 11pt;
+  font-size: 10pt;
   line-height: 24px;
   color: #333333;
   background-color: #ffffff;
@@ -2091,7 +2097,7 @@ padding: 7px 11px 11px;
 }
 
 .flux tr:nth-child(even) {
-background-color: ivory;
+background-color: white;
 }
 
 
