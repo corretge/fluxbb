@@ -18,6 +18,10 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id < 1)
 	message($lang_common['Bad request'], false, '404 Not Found');
 
+
+require PUN_ROOT.'include/poll.php';
+
+
 // Load the viewforum.php language file
 require PUN_ROOT.'lang/'.$pun_user['language'].'/forum.php';
 
@@ -148,16 +152,29 @@ if ($db->num_rows($result))
 		error('The topic table and forum table seem to be out of sync!', __FILE__, __LINE__);
 
 	// Fetch list of topics to display on this page
-	if ($pun_user['is_guest'] || $pun_config['o_show_dot'] == '0')
-	{
-		// Without "the dot"
-		$sql = 'SELECT id, poster, subject, posted, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, moved_to FROM '.$db->prefix.'topics WHERE id IN('.implode(',', $topic_ids).') ORDER BY sticky DESC, '.$sort_by.', id DESC';
-	}
-	else
-	{
-		// With "the dot"
-		$sql = 'SELECT p.poster_id AS has_posted, t.id, t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to FROM '.$db->prefix.'topics AS t LEFT JOIN '.$db->prefix.'posts AS p ON t.id=p.topic_id AND p.poster_id='.$pun_user['id'].' WHERE t.id IN('.implode(',', $topic_ids).') GROUP BY t.id'.($db_type == 'pgsql' ? ', t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to, p.poster_id' : '').' ORDER BY t.sticky DESC, t.'.$sort_by.', t.id DESC';
-	}
+//	if ($pun_user['is_guest'] || $pun_config['o_show_dot'] == '0')
+//	{
+//		// Without "the dot"
+//		$sql = 'SELECT id, poster, subject, posted, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, moved_to FROM '.$db->prefix.'topics WHERE id IN('.implode(',', $topic_ids).') ORDER BY sticky DESC, '.$sort_by.', id DESC';
+//	}
+//	else
+//	{
+//		// With "the dot"
+//		$sql = 'SELECT p.poster_id AS has_posted, t.id, t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to FROM '.$db->prefix.'topics AS t LEFT JOIN '.$db->prefix.'posts AS p ON t.id=p.topic_id AND p.poster_id='.$pun_user['id'].' WHERE t.id IN('.implode(',', $topic_ids).') GROUP BY t.id'.($db_type == 'pgsql' ? ', t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to, p.poster_id' : '').' ORDER BY t.sticky DESC, t.'.$sort_by.', t.id DESC';
+//	}
+
+        if ($pun_user['is_guest'] || $pun_config['o_show_dot'] == '0')
+        {
+                // Without "the dot"
+                $sql = 'SELECT id, poster, subject, posted, last_post, last_post_id, last_poster, num_views, num_replies, closed, sticky, moved_to, poll_type FROM '.$db->prefix.'topics WHERE id IN('.implode(',', $topic_ids).') ORDER BY sticky DESC, '.$sort_by.', id DESC';
+        }
+        else
+        {
+                // With "the dot"
+                $sql = 'SELECT p.poster_id AS has_posted, t.id, t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to, t.poll_type FROM '.$db->prefix.'topics AS t LEFT JOIN '.$db->prefix.'posts AS p ON t.id=p.topic_id AND p.poster_id='.$pun_user['id'].' WHERE t.id IN('.implode(',', $topic_ids).') GROUP BY t.id'.($db_type == 'pgsql' ? ', t.subject, t.poster, t.posted, t.last_post, t.last_post_id, t.last_poster, t.num_views, t.num_replies, t.closed, t.sticky, t.moved_to, p.poster_id' : '').' ORDER BY t.sticky DESC, t.'.$sort_by.', t.id DESC';
+        }
+
+
 
 	$result = $db->query($sql) or error('Unable to fetch topic list', __FILE__, __LINE__, $db->error());
 
@@ -197,6 +214,14 @@ if ($db->num_rows($result))
 			$status_text[] = '<span class="closedtext">'.$lang_forum['Closed'].'</span>';
 			$item_status .= ' iclosed';
 		}
+
+                if ($cur_topic['poll_type'] > 0)
+                {
+                        $item_status .= ' ipoll';
+                        $status_text[] = '<span class="polltext">'.$lang_forum['Poll'].'</span>';
+                }
+
+
 
 		if (!$pun_user['is_guest'] && $cur_topic['last_post'] > $pun_user['last_visit'] && (!isset($tracked_topics['topics'][$cur_topic['id']]) || $tracked_topics['topics'][$cur_topic['id']] < $cur_topic['last_post']) && (!isset($tracked_topics['forums'][$id]) || $tracked_topics['forums'][$id] < $cur_topic['last_post']) && is_null($cur_topic['moved_to']))
 		{

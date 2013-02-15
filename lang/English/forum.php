@@ -4,14 +4,15 @@
 $lang_forum = array(
 
 'Post topic'	=>	'Post new topic',
-'Views'			=>	'Views',
-'Moved'			=>	'Moved:',
-'Sticky'		=>	'Sticky:',
-'Closed'		=>	'Closed:',
+'Views'		=>	'Views',
+'Moved'		=>	'Moved:',
+'Sticky'	=>	'Sticky:',
+'Closed'	=>	'Closed:',
 'Empty forum'	=>	'Forum is empty.',
 'Mod controls'	=>	'Moderator controls',
 'Is subscribed'	=>	'You are currently subscribed to this forum',
 'Unsubscribe'	=>	'Unsubscribe',
-'Subscribe'		=>	'Subscribe to this forum'
+'Subscribe'	=>	'Subscribe to this forum',
+'Poll'		=>	'Poll'
 
 );

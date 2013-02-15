@@ -19,6 +19,9 @@ $fid = isset($_GET['fid']) ? intval($_GET['fid']) : 0;
 if ($tid < 1 && $fid < 1 || $tid > 0 && $fid > 0)
 	message($lang_common['Bad request'], false, '404 Not Found');
 
+require PUN_ROOT.'include/poll.php';
+
+
 // Fetch some info about the topic and/or the forum
 if ($tid)
 	$result = $db->query('SELECT f.id, f.forum_name, f.moderators, f.redirect_url, fp.post_replies, fp.post_topics, t.subject, t.closed, s.user_id AS is_subscribed FROM '.$db->prefix.'topics AS t INNER JOIN '.$db->prefix.'forums AS f ON f.id=t.forum_id LEFT JOIN '.$db->prefix.'forum_perms AS fp ON (fp.forum_id=f.id AND fp.group_id='.$pun_user['g_id'].') LEFT JOIN '.$db->prefix.'topic_subscriptions AS s ON (t.id=s.topic_id AND s.user_id='.$pun_user['id'].') WHERE (fp.read_forum IS NULL OR fp.read_forum=1) AND t.id='.$tid) or error('Unable to fetch forum info', __FILE__, __LINE__, $db->error());
@@ -158,6 +161,9 @@ if (isset($_POST['form_sent']))
 
 	$now = time();
 
+	poll_form_validate($tid, $errors);
+
+
 	// Did everything go according to plan?
 	if (empty($errors) && !isset($_POST['preview']))
 	{
@@ -197,6 +203,9 @@ if (isset($_POST['form_sent']))
 			update_search_index('post', $new_pid, $message);
 
 			update_forum($cur_posting['id']);
+
+			poll_save($new_tid);
+
 
 			// Should we send out notifications?
 			if ($pun_config['o_topic_subscriptions'] == '1')
@@ -593,6 +602,8 @@ else if (isset($_POST['preview']))
 				<div class="postright">
 					<div class="postmsg">
 						<?php echo $preview_message."\n" ?>
+					<?php if ($fid) poll_display_post($tid, $pun_user['id']); ?>
+
 					</div>
 				</div>
 			</div>
@@ -695,6 +706,9 @@ if (!empty($checkboxes))
 
 ?>
 			</div>
+
+<?php poll_form_post($tid); ?>
+
 			<p class="buttons"><input type="submit" name="submit" value="<?php echo $lang_common['Submit'] ?>" tabindex="<?php echo $cur_index++ ?>" accesskey="s" /> <input type="submit" name="preview" value="<?php echo $lang_post['Preview'] ?>" tabindex="<?php echo $cur_index++ ?>" accesskey="p" /> <a href="javascript:history.go(-1)"><?php echo $lang_common['Go back'] ?></a></p>
 		</form>
 	</div>

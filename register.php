@@ -6,6 +6,9 @@
  * License: http://www.gnu.org/licenses/gpl.html GPL version 2 or higher
  */
 
+// [modif] - Mod captcha_registration -->
+session_start();
+// [modif] - End Mod captcha_registration -->
 define('PUN_ROOT', dirname(__FILE__).'/');
 require PUN_ROOT.'include/common.php';
 
@@ -17,6 +20,12 @@ if (!$pun_user['is_guest'])
 	exit;
 }
 
+// [modif] - Mod captcha_registration --> - Add language file
+if(file_exists(PUN_ROOT.'lang/'.$pun_user['language'].'/mod_captcha_registration.php'))
+  require PUN_ROOT.'lang/'.$pun_user['language'].'/mod_captcha_registration.php';
+else
+  require PUN_ROOT.'lang/English/mod_captcha_registration.php';
+// [modif] - End Mod captcha_registration -->
 // Load the register.php language file
 require PUN_ROOT.'lang/'.$pun_user['language'].'/register.php';
 
@@ -96,7 +105,16 @@ if (isset($_POST['form_sent']))
 	else if ($password1 != $password2)
 		$errors[] = $lang_prof_reg['Pass not match'];
 
-	// Validate email
+	//[modif] - Mod captcha_registration --> - Validate confirmation code
+	include_once 'plugins/captcha_registration/securimage/securimage.php';
+
+	$securimage = new Securimage();
+
+	if ($securimage->check($_POST['captcha_securimage_code']) == false) {
+		$errors[] = $lang_mod_captcha_registration['Captcha fail'];
+	}
+// [modif] - End Mod captcha_registration
+// Validate email
 	require PUN_ROOT.'include/email.php';
 
 	if (!is_valid_email($email1))
@@ -427,7 +445,24 @@ if (!empty($errors))
 					</div>
 				</fieldset>
 			</div>
-			<p class="buttons"><input type="submit" name="register" value="<?php echo $lang_register['Register'] ?>" /></p>
+			<!-- [modif] - Mod captcha_registration -->
+<div class="inform">
+	<fieldset>
+		<legend><?php	echo $lang_mod_captcha_registration['Captcha title']	?></legend>
+		<div class="infldset">
+			<p><?php echo	sprintf($lang_mod_captcha_registration['Captcha info'], "<a href=\"#\" onclick=\"document.getElementById('captcha_securimage_image').src = 'plugins/captcha_registration/securimage/securimage_show.php?' + Math.random(); return false\">", "</a>");?></p>
+			<label class="required">
+						<p><img id="captcha_securimage_image" src="plugins/captcha_registration/securimage/securimage_show.php" alt="CAPTCHA Image" /></p>
+						<p>
+							<strong><?php echo	$lang_mod_captcha_registration['Captcha question']	?>&nbsp;<span><?php echo $lang_common['Required'] ?></span></strong><br/>
+							<input type="text" name="captcha_securimage_code" maxlength="6" />
+						</p>
+			</label>
+		</div>
+	</fieldset>
+</div>
+<!-- [modif] - End Mod captcha_registration -->
+<p class="buttons"><input type="submit" name="register" value="<?php echo $lang_register['Register'] ?>" /></p>
 		</form>
 	</div>
 </div>
