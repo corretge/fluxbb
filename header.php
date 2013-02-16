@@ -291,7 +291,7 @@ $tpl_main = str_replace('<pun_status>', $tpl_temp, $tpl_main);
 
 
 // START SUBST - <pun_announcement>
-if ($pun_user['g_read_board'] == '1' && $pun_config['o_announcement'] == '1')
+if ($pun_user['g_read_board'] == '1' && $pun_config['o_announcement'] == '1' && !($pun_user ["is_guest"]))
 {
 	ob_start();
 
