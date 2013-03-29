@@ -296,6 +296,28 @@ if ($pun_user['g_read_board'] == '1' && $pun_config['o_announcement'] == '1' && 
 	ob_start();
 
 ?>
+<div id="market" class="marquee">
+<?php
+
+require '/srv/cli/c010/iclanners.com/www80/erepublik/eEG/getData/eRepFeed.class.php';
+$tok = ftok (eRepFeed::lastFolder, 't');
+$shmId = shmop_open($tok, 'a', 0666, 1024);
+$shmData = shmop_read($shmId, 0, 1024);
+$jData = igbinary_unserialize($shmData);
+shmop_close($shmId);
+if ($jData)
+{
+	echo  ' | ' . date('d-m-Y H:i:s', $jData['time']);
+	echo  " | GOLD compra {$jData['gold']['buy']['price']}";
+	echo  " | GOLD venda  {$jData['gold']['sell']['price']}";
+	echo  " | eEG RAW alim.  {$jData['food']['raw']['price']}";
+	echo  " | eEG RAW armes  {$jData['weap']['raw']['price']}";
+	echo  " | eEG Q2 alim.  {$jData['food']['Q2']['price']}";
+	echo  " | eEG Q7 armes  {$jData['weap']['Q7']['price']}";
+	echo  " | Feina eEG {$jData['job']['price']}";
+}
+?>
+</div>
 <div id="announce" class="block">
 	<div class="hd"><h2><span><?php echo $lang_common['Announcement'] ?></span></h2></div>
 	<div class="box">

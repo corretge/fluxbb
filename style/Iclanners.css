@@ -2182,3 +2182,15 @@ background-color: white;
         margin-right: 12px;
 }
 
+
+
+/* Market
+------------------------*/
+#market {
+-webkit-marquee: auto medium infinite scroll normal;
+overflow-x: -webkit-marquee;
+font-size: 10px;
+marquee:  auto medium infinite scroll normal;
+-moz-marquee: auto medium infinite scroll normal;  
+}
+
